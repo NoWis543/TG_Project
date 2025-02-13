@@ -3,13 +3,17 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import time
+import csv
 
 # Настройка драйвера
 service = Service("D:\\ChromeDriver\\chromedriver-win64\\chromedriver.exe")
 options = Options()
-options.binary_location = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+options.binary_location = r"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
 
 driver = webdriver.Chrome(service=service, options=options)
+
+# Укажите кастомный путь для CSV-файла
+csv_path = "D:\\TG Project\\app\\products_technodome.csv"
 
 try:
     # Открытие категории "Комплектующие"
@@ -61,9 +65,14 @@ try:
             print("Не удалось найти кнопку следующей страницы, заканчиваем парсинг.")
             break
 
-    print("\nСписок товаров с ценами:")
-    for product in products:
-        print(f"{product['name']} — {product['price']}")
+    # Сохранение данных в CSV-файл
+    with open(csv_path, "w", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file, delimiter=";")
+        writer.writerow(["Название", "Цена"])
+        for product in products:
+            writer.writerow([product["name"], product["price"]])
+    
+    print(f"\nДанные сохранены в {csv_path}")
 
 finally:
     driver.quit()
