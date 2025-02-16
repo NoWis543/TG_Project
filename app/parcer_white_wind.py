@@ -103,7 +103,7 @@ for category, link in categories.items():
     time.sleep(2)
 
 # Сохранение данных в CSV
-csv_path = r"D:\TG Project\app\components_shop_kz.csv"
+csv_path = r"D:\TG Project\app\products_white_wind.csv"
 with open(csv_path, "w", newline="", encoding="utf-8") as file:
     writer = csv.writer(file)
     writer.writerow(["Категория", "Название", "Цена"])
