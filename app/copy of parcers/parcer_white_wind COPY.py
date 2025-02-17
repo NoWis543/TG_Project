@@ -1,64 +1,45 @@
-import time
-import csv
 from selenium import webdriver
 from selenium.webdriver.firefox.service import Service
-from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from sqlalchemy.orm import Session
-from app.database import SessionLocal
-from app.models import Product
+import csv
+import time
 
 # Пути к драйверу и Firefox
 gecko_path = r"D:\geckodriver\geckodriver.exe"
 firefox_binary_path = r"C:\\Users\\amogu\\AppData\\Local\\Mozilla Firefox\\firefox.exe"
 
-# Настройки Selenium
 options = Options()
 options.binary_location = firefox_binary_path
+
 service = Service(gecko_path)
 driver = webdriver.Firefox(service=service, options=options)
 wait = WebDriverWait(driver, 10)
 
-# Категории товаров
+# Список категорий
 categories = {
     "Процессоры": "https://shop.kz/karaganda/offers/protsessory/",
     "Материнские платы": "https://shop.kz/karaganda/offers/materinskie-platy/",
     "Оперативная память": "https://shop.kz/karaganda/offers/operativnaya-pamyat/",
     "Видеокарты": "https://shop.kz/karaganda/offers/videokarty/",
     "Жесткие диски": "https://shop.kz/karaganda/offers/zhestkie-diski/",
-    "SSD диски": "https://shop.kz/karaganda/offers/ssd-diski/"
+    "SSD диски": "https://shop.kz/karaganda/offers/ssd-diski/",
+    "Блоки питания": "https://shop.kz/karaganda/offers/bloki-pitaniya/",
+    "Корпуса": "https://shop.kz/karaganda/offers/korpusa/",
+    "Кулеры для процессора": "https://shop.kz/karaganda/offers/kulery-dlya-protsessora/",
+    "Системы водяного охлаждения": "https://shop.kz/karaganda/offers/vodyanoe-okhlazhdenie/",
+    "Термопасты": "https://shop.kz/karaganda/offers/termopasta/",
+    "Оптические дисководы": "https://shop.kz/karaganda/offers/opticheskie-diskovody-privody/",
+    "Прочее охлаждение": "https://shop.kz/karaganda/offers/prochee-okhlazhdenie/",
+    "Звуковые карты": "https://shop.kz/karaganda/offers/zvukovye-karty/",
+    "Карты видеозахвата": "https://shop.kz/karaganda/offers/karty-videozakhvata/",
+    "Адаптеры, контроллеры": "https://shop.kz/karaganda/offers/adaptery-kontrollery/",
+    "Корпуса для дисков": "https://shop.kz/karaganda/offers/dok-stantsii-korpusa-dlya-diskov/"
 }
 
-# Файл CSV
-csv_filename = "D:\\TG Project\\app\\products_white_wind.csv"
-
-# Создаем или очищаем CSV
-with open(csv_filename, "w", newline="", encoding="utf-8") as file:
-    writer = csv.writer(file)
-    writer.writerow(["Название", "Цена", "Категория", "Ссылка"])
-
-def save_to_db(name, price, category, link):
-    """Сохранение данных в базу"""
-    db: Session = SessionLocal()
-    try:
-        price = float(price.replace(" ", "").replace("₸", "")) if "₸" in price else None
-        product = Product(name=name, price=price, category=category, link=link)
-        db.add(product)
-        db.commit()
-        print(f"Сохранено в БД: {name} - {price}")
-    except Exception as e:
-        print(f"Ошибка сохранения {name}: {e}")
-        db.rollback()
-    finally:
-        db.close()
-
-def save_to_csv(name, price, category, link):
-    """Сохранение данных в CSV"""
-    with open(csv_filename, "a", newline="", encoding="utf-8") as file:
-        writer = csv.writer(file)
-        writer.writerow([name, price, category, link])
+data = []
 
 def parse_category(category_name, url):
     driver.get(url)
@@ -68,15 +49,14 @@ def parse_category(category_name, url):
     while True:
         print(f"Парсим страницу {page} категории {category_name}...")
         products = driver.find_elements(By.CLASS_NAME, "bx_catalog_item")
-
+        
         if not products:
             print("Достигнут конец списка страниц.")
             break
-
+        
         for index, product in enumerate(products, start=1):
             try:
                 name = product.find_element(By.CLASS_NAME, "bx_catalog_item_title_text").text
-                
                 try:
                     price_element = product.find_element(By.XPATH, ".//div[6]/div/span[2]")
                 except:
@@ -86,17 +66,12 @@ def parse_category(category_name, url):
                         price_element = None
                 
                 price = price_element.text if price_element else "Цена не найдена"
-                link = product.find_element(By.CLASS_NAME, "bx_catalog_item_title").find_element(By.TAG_NAME, "a").get_attribute("href")
-
-                print(f"Товар {index}: {name} - {price} - {link}")
                 
-                save_to_db(name, price, category_name, link)
-                save_to_csv(name, price, category_name, link)
-
+                print(f"Товар {index}: {name} - {price}")
+                data.append([category_name, name, price])
             except Exception as e:
                 print(f"Ошибка парсинга товара {index}: {e}")
-
-        # Переход на следующую страницу
+        
         current_url = driver.current_url
         next_buttons = [
             "//div[4]/div/ul/li[7]/a/span",  # Верхняя кнопка
@@ -127,5 +102,12 @@ for category, link in categories.items():
     parse_category(category, link)
     time.sleep(2)
 
-print("Парсинг завершен!")
+# Сохранение данных в CSV
+csv_path = r"D:\TG Project\app\products_white_wind.csv"
+with open(csv_path, "w", newline="", encoding="utf-8") as file:
+    writer = csv.writer(file)
+    writer.writerow(["Категория", "Название", "Цена"])
+    writer.writerows(data)
+
+print(f"Парсинг завершен! Данные сохранены в {csv_path}")
 driver.quit()

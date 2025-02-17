@@ -1,16 +1,14 @@
 import csv
 import time
-import re
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from app.database import SessionLocal
-from app.models import Product
 
 # Укажи путь к ChromeDriver
 service = Service("D:\\ChromeDriver\\chromedriver-win64\\chromedriver.exe")
 options = Options()
+
 driver = webdriver.Chrome(service=service, options=options)
 
 categories = {
@@ -33,45 +31,10 @@ categories = {
 
 file_path = "D:\\TG Project\\app\\products_kaspi.csv"
 
-
-def clean_price(price_str):
-    """Удаляет символ валюты и пробелы, преобразует в float"""
-    return float(re.sub(r"[^\d.]", "", price_str))
-
-
-def save_to_csv(data):
-    """Сохранение данных в CSV-файл"""
-    with open(file_path, mode="a", encoding="utf-8", newline="") as file:
-        writer = csv.writer(file)
-        writer.writerows(data)
-
-
-def save_to_db(data):
-    """Сохранение данных в PostgreSQL"""
-    session = SessionLocal()
-    try:
-        for category, name, price, link in data:
-            product = Product(
-                category=category,
-                name=name,
-                price=price,
-                link=link
-            )
-            session.add(product)
-        session.commit()
-    except Exception as e:
-        session.rollback()
-        print(f"Ошибка при сохранении в БД: {e}")
-    finally:
-        session.close()
-
-
-def parse_kaspi():
-    """Основная функция парсинга Kaspi"""
-    with open(file_path, mode="w", encoding="utf-8", newline="") as file:
-        writer = csv.writer(file)
-        writer.writerow(["Категория", "Название товара", "Цена", "Ссылка"])
-
+with open(file_path, mode="w", encoding="utf-8", newline="") as file:
+    writer = csv.writer(file)
+    writer.writerow(["Категория", "Название товара", "Цена"])
+    
     for category, url in categories.items():
         print(f"Парсим категорию: {category}")
         driver.get(url)
@@ -80,36 +43,34 @@ def parse_kaspi():
         save_counter = 0
         save_interval = 500
         page_number = 1
-
+        
         while True:
             print(f"Обрабатываем страницу {page_number}...")
-
+            
             for i in range(1, 13):  # 12 товаров на странице
                 try:
                     name_xpath = f'//*[@id="scroll-to"]/div[4]/div[1]/div[{i}]/div[2]/div[1]/a'
                     price_xpath = f'//*[@id="scroll-to"]/div[4]/div[1]/div[{i}]/div[2]/div[3]/div[1]/span[2]'
-
+                    
                     name_element = driver.find_element(By.XPATH, name_xpath)
                     price_element = driver.find_element(By.XPATH, price_xpath)
-
-                    name = name_element.text.strip()
-                    price = clean_price(price_element.text.strip())  # Очистка цены
-                    link = name_element.get_attribute("href")   # Получаем ссылку на товар
                     
-                    all_products.append([category, name, price, link])
+                    name = name_element.text.strip()
+                    price = price_element.text.strip()
+                    
+                    all_products.append([category, name, price])
                     save_counter += 1
-                    print(f"Товар {i}: {name} - {price} ({link})")
-
+                    print(f"Товар {i}: {name} - {price}")
+                    
                     if save_counter >= save_interval:
-                        save_to_csv(all_products)
-                        save_to_db(all_products)
+                        writer.writerows(all_products)
                         all_products = []
                         save_counter = 0
-                        print("Частичное сохранение...")
+                        print("Частичное сохранение в CSV...")
                 except Exception as e:
                     print(f"Ошибка при обработке товара {i}: {e}")
                     continue
-
+            
             try:
                 next_button = driver.find_element(By.XPATH, '//*[@id="scroll-to"]/div[4]/div[2]/li[7]')
                 if "disabled" in next_button.get_attribute("class"):
@@ -121,15 +82,10 @@ def parse_kaspi():
             except Exception as e:
                 print("Кнопка перехода на следующую страницу не найдена или недоступна.")
                 break
-
+        
         if all_products:
-            save_to_csv(all_products)
-            save_to_db(all_products)
-            print("Финальное сохранение...")
+            writer.writerows(all_products)
+            print("Финальное сохранение в CSV...")
 
-    print("Парсинг завершен.")
-    driver.quit()
-
-
-if __name__ == "__main__":
-    parse_kaspi()
+print("Все данные сохранены в products_kaspi.csv")
+driver.quit()

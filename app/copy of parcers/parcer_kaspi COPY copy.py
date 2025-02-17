@@ -50,12 +50,12 @@ def save_to_db(data):
     """Сохранение данных в PostgreSQL"""
     session = SessionLocal()
     try:
-        for category, name, price, link in data:
+        for category, name, price in data:
             product = Product(
                 category=category,
                 name=name,
                 price=price,
-                link=link
+                link="Kaspi"
             )
             session.add(product)
         session.commit()
@@ -70,7 +70,7 @@ def parse_kaspi():
     """Основная функция парсинга Kaspi"""
     with open(file_path, mode="w", encoding="utf-8", newline="") as file:
         writer = csv.writer(file)
-        writer.writerow(["Категория", "Название товара", "Цена", "Ссылка"])
+        writer.writerow(["Категория", "Название товара", "Цена"])
 
     for category, url in categories.items():
         print(f"Парсим категорию: {category}")
@@ -94,11 +94,10 @@ def parse_kaspi():
 
                     name = name_element.text.strip()
                     price = clean_price(price_element.text.strip())  # Очистка цены
-                    link = name_element.get_attribute("href")   # Получаем ссылку на товар
-                    
-                    all_products.append([category, name, price, link])
+
+                    all_products.append([category, name, price])
                     save_counter += 1
-                    print(f"Товар {i}: {name} - {price} ({link})")
+                    print(f"Товар {i}: {name} - {price}")
 
                     if save_counter >= save_interval:
                         save_to_csv(all_products)
