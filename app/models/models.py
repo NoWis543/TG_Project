@@ -9,3 +9,10 @@ class Product(Base):
     price = Column(Float)
     category = Column(String)
     link = Column(String)
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, nullable=False)
+    password_hash = Column(String, nullable=False)

@@ -1,10 +1,13 @@
 from fastapi import FastAPI
+from app.routes import auth
 
 app = FastAPI()
 
 @app.get("/")
 async def read_root():
     return {"message": "Привет, FastAPI работает!"}
+
+app.include_router(auth.router, prefix="/auth")
 
 if __name__ == "__main__":
     import uvicorn
