@@ -3,7 +3,10 @@ from dotenv import load_dotenv
 
 class Settings(BaseSettings):
     DATABASE_URL: str
-    
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
+    SECRET_KEY: str
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

@@ -4,6 +4,8 @@ from app.database import SessionLocal
 from app.models import User
 from app.schemas.schemas import UserCreate, UserLogin
 from app.security import hash_password, authenticate_user, create_jwt_token
+from app.utils.auth import get_current_user  # Функция для проверки токена
+from fastapi.security import OAuth2PasswordRequestForm
 
 router = APIRouter()
 
@@ -30,6 +32,10 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     return {"message": "Пользователь зарегистрирован"}
 
 @router.post("/login/")
-def login(user: UserLogin, db: Session = Depends(get_db)):
-    token = authenticate_user(user.username, user.password, db)
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    token = authenticate_user(form_data.username, form_data.password, db)
     return {"access_token": token, "token_type": "bearer"}
+
+@router.get("/me/")
+def read_users_me(current_user: dict = Depends(get_current_user)):
+    return {"username": current_user["sub"]}
