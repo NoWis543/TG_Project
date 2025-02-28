@@ -1,9 +1,19 @@
 from fastapi import FastAPI, Depends
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.openapi.utils import get_openapi
+from fastapi.middleware.cors import CORSMiddleware  # Импорт CORS
 from app.routes import auth
 
 app = FastAPI(title="My API", description="API with JWT Authentication", version="1.0")
+
+# Добавляем CORS Middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # Разрешаем фронтенд Vite
+    allow_credentials=True,
+    allow_methods=["*"],  # Разрешаем все методы (GET, POST, PUT и т.д.)
+    allow_headers=["*"],  # Разрешаем все заголовки
+)
 
 # Определяем OAuth2PasswordBearer (токен передается в Authorization Header)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login/")
