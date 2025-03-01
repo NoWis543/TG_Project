@@ -15,60 +15,65 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 
 # Пути
 CHROMEDRIVER_PATH = "D:\\ChromeDriver\\chromedriver-win64\\chromedriver.exe"
-CSV_PATH = "D:\\TG Project\\app\\products_mechta.csv"
+CSV_PATH = "D:\\TG Project\\Backend\\app\\storage\\products_technodome.csv"
 
 # Настройки Selenium
 service = Service(CHROMEDRIVER_PATH)
 options = Options()
 options.binary_location = r"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
 
-def parse_mechta():
+def parse_technodom():
     driver = webdriver.Chrome(service=service, options=options)
-    base_url = "https://www.mechta.kz/section/kompyuternye-aksessuary/?setcity=kr&page="
-    
+    url = "https://www.technodom.kz/karaganda/catalog/noutbuki-i-komp-jutery/komplektujuschie"
+    driver.get(url)
+
+    wait = WebDriverWait(driver, 10)
     products = []
     page_number = 1
 
     try:
         while True:
-            url = base_url + str(page_number)
-            driver.get(url)
-            logging.info(f"Открыта страница {page_number}...")
+            logging.info(f"Парсим страницу {page_number}...")
 
-            wait = WebDriverWait(driver, 10)
-
-            try:
-                product_elements = wait.until(EC.presence_of_all_elements_located(
-                    (By.XPATH, '//*[@id="q-app"]/div[1]/div/main/div/div/div[3]/div[2]/div[2]/div[2]/div/div//article')
-                ))
-            except Exception:
-                logging.info(f"Страница {page_number} пуста, парсинг завершен.")
-                break
-
-            for product in product_elements:
+            i = 1
+            while True:
                 try:
-                    name_element = product.find_element(By.XPATH, './a/div[1]/div[1]')
+                    # Ожидание появления элемента
+                    name_xpath = f'//*[@id="__next"]/section/main/section/div/div[2]/article/ul/li[{i}]/a/div/div[2]/div[1]/p'
+                    name_element = wait.until(EC.presence_of_element_located((By.XPATH, name_xpath)))
                     name = name_element.text.strip()
 
-                    price_element = product.find_element(By.XPATH, './a/div[2]/div[2]/div[1]')
+                    price_xpath = f'//*[@id="__next"]/section/main/section/div/div[2]/article/ul/li[{i}]/a/div/div[2]/div[3]/p'
+                    price_element = wait.until(EC.presence_of_element_located((By.XPATH, price_xpath)))
                     price = price_element.text.replace("₸", "").replace(" ", "").strip()
 
                     products.append({"name": name, "price": int(price)})
-                    logging.info(f"Товар: {name} — {price} ₸")
+                    logging.info(f"Товар {i}: {name} — {price} ₸")
+                    i += 1
+                except Exception:
+                    break  # Если товаров больше нет, переходим к следующей странице
 
-                except Exception as e:
-                    logging.error(f"Ошибка парсинга товара: {e}")
-                    continue
-            
-            page_number += 1  # Переход к следующей странице
+            # Ищем кнопку следующей страницы
+            try:
+                if page_number == 1:
+                    next_button = driver.find_element(By.XPATH, '//*[@id="__next"]/section/main/section/div/div[2]/article/div/div/a')
+                else:
+                    next_button = driver.find_element(By.XPATH, '//*[@id="__next"]/section/main/section/div/div[2]/article/div/div/a[2]')
+                
+                next_button.click()
+                page_number += 1
+                wait.until(EC.staleness_of(next_button))  # Ожидаем загрузки новой страницы
+            except Exception:
+                logging.info("Парсинг завершен, последняя страница.")
+                break
 
     finally:
         driver.quit()
 
-    # Сохранение данных
+    # Сохраняем данные в CSV и БД
     save_to_csv(products)
     save_to_db(products)
-    logging.info("Данные сохранены в CSV и БД!")
+    logging.info("Данные успешно сохранены в CSV и БД!")
 
 def save_to_csv(products):
     """Сохранение данных в CSV-файл"""
@@ -94,4 +99,4 @@ def save_to_db(products):
         session.close()
 
 if __name__ == "__main__":
-    parse_mechta()
+    parse_technodom()

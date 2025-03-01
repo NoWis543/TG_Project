@@ -31,7 +31,7 @@ categories = {
     "Решетки и фильтры для вентиляторов": "https://kaspi.kz/shop/karaganda/c/grilles%20and%20filters%20for%20fans/?q=%3Acategory%3AGrilles%20and%20filters%20for%20fans%3AavailableInZones%3A351010000&sort=relevance&sc="
 }
 
-file_path = "D:\\TG Project\\app\\products_kaspi.csv"
+file_path = "D:\\TG Project\\Backend\\app\\storage\\products_kaspi.csv"
 
 
 def clean_price(price_str):

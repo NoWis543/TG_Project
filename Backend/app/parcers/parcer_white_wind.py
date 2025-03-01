@@ -32,7 +32,7 @@ categories = {
 }
 
 # Файл CSV
-csv_filename = "D:\\TG Project\\app\\products_white_wind.csv"
+csv_filename = "D:\\TG Project\\Backend\\app\\storage\\products_white_wind.csv"
 
 # Создаем или очищаем CSV
 with open(csv_filename, "w", newline="", encoding="utf-8") as file:
