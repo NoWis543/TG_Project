@@ -40,19 +40,26 @@ with open(csv_filename, "w", newline="", encoding="utf-8") as file:
     writer.writerow(["Название", "Цена", "Категория", "Ссылка"])
 
 def save_to_db(name, price, category, link):
-    """Сохранение данных в базу"""
+    """Сохранение или обновление товара в базе данных"""
     db: Session = SessionLocal()
     try:
         price = float(price.replace(" ", "").replace("₸", "")) if "₸" in price else None
-        product = Product(name=name, price=price, category=category, link=link)
-        db.add(product)
+        existing = db.query(Product).filter_by(name=name, category=category).first()
+        if existing:
+            existing.price = price
+            existing.link = link
+            print(f"Обновлено в БД: {name} - {price}")
+        else:
+            product = Product(name=name, price=price, category=category, link=link)
+            db.add(product)
+            print(f"Добавлено в БД: {name} - {price}")
         db.commit()
-        print(f"Сохранено в БД: {name} - {price}")
     except Exception as e:
         print(f"Ошибка сохранения {name}: {e}")
         db.rollback()
     finally:
         db.close()
+
 
 def save_to_csv(name, price, category, link):
     """Сохранение данных в CSV"""

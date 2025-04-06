@@ -47,23 +47,24 @@ def save_to_csv(data):
 
 
 def save_to_db(data):
-    """Сохранение данных в PostgreSQL"""
+    """Сохранение данных в PostgreSQL с обновлением по name и category"""
     session = SessionLocal()
     try:
         for category, name, price, link in data:
-            product = Product(
-                category=category,
-                name=name,
-                price=price,
-                link=link
-            )
-            session.add(product)
+            existing_product = session.query(Product).filter_by(name=name, category=category).first()
+            if existing_product:
+                existing_product.price = price
+                existing_product.link = link
+            else:
+                new_product = Product(name=name, price=price, category=category, link=link)
+                session.add(new_product)
         session.commit()
     except Exception as e:
         session.rollback()
         print(f"Ошибка при сохранении в БД: {e}")
     finally:
         session.close()
+
 
 
 def parse_kaspi():

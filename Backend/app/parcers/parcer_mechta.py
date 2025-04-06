@@ -9,6 +9,7 @@ import csv
 import os
 from app.database import SessionLocal
 from app.models import Product
+import time
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -25,7 +26,7 @@ options.binary_location = r"C:\\Program Files\\Google\\Chrome\\Application\\chro
 def parse_mechta():
     driver = webdriver.Chrome(service=service, options=options)
     base_url = "https://www.mechta.kz/section/kompyuternye-aksessuary/?setcity=kr&page="
-    
+
     products = []
     page_number = 1
 
@@ -35,40 +36,54 @@ def parse_mechta():
             driver.get(url)
             logging.info(f"Открыта страница {page_number}...")
 
+            # Закрытие всплывающего окна
+            try:
+                wait_popup = WebDriverWait(driver, 5)
+                close_button = wait_popup.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="popmechanic-form-106218"]/button')))
+                close_button.click()
+                logging.info("Всплывающее окно закрыто.")
+                time.sleep(2)
+            except:
+                logging.info("Всплывающее окно не появилось.")
+
             wait = WebDriverWait(driver, 10)
 
             try:
                 product_elements = wait.until(EC.presence_of_all_elements_located(
-                    (By.XPATH, '//*[@id="q-app"]/div[1]/div/main/div/div/div[3]/div[2]/div[2]/div[2]/div/div//article')
+                    (By.XPATH, '//article')
                 ))
+
             except Exception:
                 logging.info(f"Страница {page_number} пуста, парсинг завершен.")
                 break
 
-            for product in product_elements:
+            for index, product in enumerate(product_elements, start=1):
                 try:
-                    name_element = product.find_element(By.XPATH, './a/div[1]/div[1]')
+                    name_element = product.find_element(By.XPATH, './/section[1]/a/section[3]/p')
+                    price_element = product.find_element(By.XPATH, './/section[1]/a/section[4]/section/p[1]')
+                    link_element = product.find_element(By.XPATH, './/section[1]/a')
+
                     name = name_element.text.strip()
-
-                    price_element = product.find_element(By.XPATH, './a/div[2]/div[2]/div[1]')
                     price = price_element.text.replace("₸", "").replace(" ", "").strip()
+                    link = link_element.get_attribute("href")
 
-                    products.append({"name": name, "price": int(price)})
-                    logging.info(f"Товар: {name} — {price} ₸")
+                    products.append({"name": name, "price": int(price), "link": link})
+                    logging.info(f"Товар {index}: {name} — {price} ₸ ({link})")
 
                 except Exception as e:
                     logging.error(f"Ошибка парсинга товара: {e}")
                     continue
-            
-            page_number += 1  # Переход к следующей странице
+
+            page_number += 1
 
     finally:
         driver.quit()
 
-    # Сохранение данных
     save_to_csv(products)
     save_to_db(products)
     logging.info("Данные сохранены в CSV и БД!")
+
+
 
 def save_to_csv(products):
     """Сохранение данных в CSV-файл"""
@@ -81,17 +96,27 @@ def save_to_csv(products):
     logging.info(f"Данные сохранены в CSV: {CSV_PATH}")
 
 def save_to_db(products):
-    """Сохранение данных в PostgreSQL"""
+    """Сохранение данных в PostgreSQL с обновлением, если товар уже существует"""
     session = SessionLocal()
     try:
         for product in products:
-            existing_product = session.query(Product).filter_by(name=product["name"]).first()
-            if not existing_product:
-                new_product = Product(name=product["name"], price=product["price"])
+            existing = session.query(Product).filter_by(name=product["name"], category="Mechta").first()
+            if existing:
+                existing.price = product["price"]
+                existing.link = product["link"]  # обновим ссылку
+            else:
+                new_product = Product(
+                    name=product["name"],
+                    price=product["price"],
+                    category="Mechta",
+                    link=product["link"]
+                )
                 session.add(new_product)
         session.commit()
     finally:
         session.close()
+
+
 
 if __name__ == "__main__":
     parse_mechta()

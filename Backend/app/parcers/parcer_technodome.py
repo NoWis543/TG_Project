@@ -47,8 +47,13 @@ def parse_technodom():
                     price_element = wait.until(EC.presence_of_element_located((By.XPATH, price_xpath)))
                     price = price_element.text.replace("₸", "").replace(" ", "").strip()
 
-                    products.append({"name": name, "price": int(price)})
-                    logging.info(f"Товар {i}: {name} — {price} ₸")
+                    link_xpath = f'//*[@id="__next"]/section/main/section/div/div[2]/article/ul/li[{i}]/a'
+                    link_element = wait.until(EC.presence_of_element_located((By.XPATH, link_xpath)))
+                    link = link_element.get_attribute("href")
+
+                    products.append({"name": name, "price": int(price), "link": link})
+                    logging.info(f"Товар {i}: {name} — {price} ₸ — {link}")
+
                     i += 1
                 except Exception:
                     break  # Если товаров больше нет, переходим к следующей странице
@@ -86,15 +91,26 @@ def save_to_csv(products):
     logging.info(f"Данные сохранены в CSV: {CSV_PATH}")
 
 def save_to_db(products):
-    """Сохранение данных в PostgreSQL"""
+    """Сохранение данных в PostgreSQL (обновление при совпадении имени)"""
     session = SessionLocal()
     try:
         for product in products:
             existing_product = session.query(Product).filter_by(name=product["name"]).first()
-            if not existing_product:
-                new_product = Product(name=product["name"], price=product["price"])
+            if existing_product:
+                # Обновление данных
+                existing_product.price = product["price"]
+            else:
+                new_product = Product(
+                    name=product["name"],
+                    price=product["price"],
+                    category="Технодом",
+                    link=product["link"]
+                )
                 session.add(new_product)
         session.commit()
+    except Exception as e:
+        print(f"Ошибка при сохранении в БД: {e}")
+        session.rollback()
     finally:
         session.close()
 

@@ -25,18 +25,24 @@ categories = {
 }
 
 def save_to_db(name, price, category, link):
-    """Сохранение данных в базу"""
+    """Сохранение или обновление товара в базе"""
     db: Session = SessionLocal()
     try:
-        price = float(price.replace(" ", "").replace("₸", ""))  # Приводим цену к числу
-        product = Product(name=name, price=price, category=category, link=link)
-        db.add(product)
+        price = float(price.replace(" ", "").replace("₸", ""))
+        existing_product = db.query(Product).filter_by(name=name, category=category).first()
+        if existing_product:
+            existing_product.price = price
+            existing_product.link = link
+        else:
+            product = Product(name=name, price=price, category=category, link=link)
+            db.add(product)
         db.commit()
     except Exception as e:
         print(f"Ошибка сохранения {name}: {e}")
         db.rollback()
     finally:
         db.close()
+
 
 try:
     driver.get("https://www.sulpak.kz/")
