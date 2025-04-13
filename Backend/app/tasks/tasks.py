@@ -1,4 +1,4 @@
-print("[DEBUG] Модуль tasks.py был импортирован")
+#print("[DEBUG] Модуль tasks.py был импортирован")
 
 from celery import shared_task
 import subprocess
