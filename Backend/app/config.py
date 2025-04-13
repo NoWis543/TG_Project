@@ -6,7 +6,8 @@ class Settings(BaseSettings):
     ALGORITHM: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
     SECRET_KEY: str
-
+    CELERY_BROKER_URL: str
+    CELERY_RESULT_BACKEND: str
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
