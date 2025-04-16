@@ -1,30 +1,38 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout } from "../store/slices/authSlice";
+import { useNavigate, useLocation } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function LoginPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || "/dashboard";
+
   const { token, isAuth } = useSelector((state) => state.auth);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     setMessage("");
     setLoading(true);
-
+  
     try {
       const response = await fetch("http://127.0.0.1:8000/auth/login/", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ username, password }),
       });
-
+  
       const data = await response.json();
       if (response.ok) {
         dispatch(login({ token: data.access_token }));
+        navigate("/"); // ⬅️ теперь редирект на домашнюю страницу
         setMessage("Вход успешен!");
       } else {
         setMessage(data.detail || "Ошибка входа");
@@ -35,34 +43,7 @@ function LoginPage() {
       setLoading(false);
     }
   };
-
-  const handleRegister = async () => {
-    setMessage("");
-    if (!username || !password) {
-      setMessage("Введите имя пользователя и пароль");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const response = await fetch("http://127.0.0.1:8000/auth/register/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        setMessage("Регистрация успешна! Теперь войдите.");
-      } else {
-        setMessage(data.detail || "Ошибка регистрации");
-      }
-    } catch {
-      setMessage("Ошибка сети");
-    } finally {
-      setLoading(false);
-    }
-  };
+  
 
   const handleLogout = () => {
     dispatch(logout());
@@ -84,13 +65,23 @@ function LoginPage() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
-            <input
-              className="w-full border border-gray-300 p-2 rounded mb-4"
-              placeholder="Пароль"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+
+            <div className="relative mb-4">
+              <input
+                className="w-full border p-2 rounded pr-10"
+                type={showPassword ? "text" : "password"}
+                placeholder="Пароль"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <span
+                className="absolute right-3 top-3 cursor-pointer text-gray-600"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+
             <button
               className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
               onClick={handleLogin}
@@ -98,12 +89,16 @@ function LoginPage() {
             >
               {loading ? "..." : "Войти"}
             </button>
-            <button
-              className="w-full text-sm text-blue-600 mt-4 hover:underline"
-              onClick={handleRegister}
-            >
-              Зарегистрироваться
-            </button>
+
+            <p className="text-sm text-center mt-4 text-gray-600">
+              Нет аккаунта?{" "}
+              <span
+                className="text-blue-600 cursor-pointer hover:underline"
+                onClick={() => navigate("/register")}
+              >
+                Зарегистрируйтесь
+              </span>
+            </p>
           </>
         ) : (
           <>

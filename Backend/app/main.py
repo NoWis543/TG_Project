@@ -3,6 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware  # Импорт CORS
 from app.routes import auth
+from app.routes import products
 
 app = FastAPI(title="My API", description="API with JWT Authentication", version="1.0")
 
@@ -23,6 +24,7 @@ async def read_root():
     return {"message": "Привет, FastAPI работает!"}
 
 app.include_router(auth.router, prefix="/auth")
+app.include_router(products.router)
 
 # ОПРЕДЕЛЯЕМ ПРАВИЛЬНУЮ OpenAPI-схему
 def custom_openapi():

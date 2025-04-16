@@ -1,1 +1,38 @@
 @import "tailwindcss";
+
+/* @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  .bg-animated {
+    background: linear-gradient(-45deg, #6366f1, #a855f7, #ec4899);
+    background-size: 200% 200%;
+    animation: gradientShift 8s ease infinite;
+  } */
+
+  /* <div className="flex items-center justify-center min-h-screen bg-animated"> для RegisterPage и LoginPage */
+
+@layer utilities {
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out forwards;
+  }
+}

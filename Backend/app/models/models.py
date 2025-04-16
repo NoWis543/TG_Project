@@ -10,6 +10,15 @@ class Product(Base):
     category = Column(String)
     link = Column(String)
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "price": self.price,
+            "category": self.category,
+            "link": self.link,
+        }
+
 class User(Base):
     __tablename__ = "users"
 
