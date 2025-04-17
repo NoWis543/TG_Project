@@ -24,4 +24,5 @@ def authenticate_user(username: str, password: str, db):
     user = db.query(User).filter(User.username == username).first()
     if not user or user.password_hash != hash_password(password):
         raise HTTPException(status_code=401, detail="Неверные учетные данные")
-    return create_jwt_token({"sub": user.username})
+    return create_jwt_token({"sub": str(user.id)})
+

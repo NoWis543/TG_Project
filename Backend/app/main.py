@@ -4,6 +4,7 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware  # Импорт CORS
 from app.routes import auth
 from app.routes import products
+from app.routes import favorites
 
 app = FastAPI(title="My API", description="API with JWT Authentication", version="1.0")
 
@@ -25,6 +26,7 @@ async def read_root():
 
 app.include_router(auth.router, prefix="/auth")
 app.include_router(products.router)
+app.include_router(favorites.router, prefix="/favorites", tags=["Favorites"])
 
 # ОПРЕДЕЛЯЕМ ПРАВИЛЬНУЮ OpenAPI-схему
 def custom_openapi():

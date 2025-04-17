@@ -6,6 +6,9 @@ const favoritesSlice = createSlice({
     items: [],
   },
   reducers: {
+    setFavorites: (state, action) => {
+      state.items = action.payload;
+    },
     toggleFavorite: (state, action) => {
       const existing = state.items.find((item) => item.id === action.payload.id);
       if (existing) {
@@ -20,5 +23,5 @@ const favoritesSlice = createSlice({
   },
 });
 
-export const { toggleFavorite, clearFavorites } = favoritesSlice.actions;
+export const { toggleFavorite, clearFavorites, setFavorites } = favoritesSlice.actions;
 export default favoritesSlice.reducer;

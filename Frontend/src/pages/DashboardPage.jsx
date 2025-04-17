@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { FaChevronUp, FaChevronDown, FaHeart, FaRegHeart } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleFavorite } from "../store/slices/favoritesSlice";
+import { toggleFavorite, setFavorites } from "../store/slices/favoritesSlice";
 import toast from "react-hot-toast";
 
 function DashboardPage() {
@@ -27,6 +27,35 @@ function DashboardPage() {
         setCategories(cats);
       });
   }, []);
+
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+  
+      try {
+        const res = await fetch("http://127.0.0.1:8000/favorites/", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+  
+        if (res.ok) {
+          const data = await res.json();
+          dispatch(setFavorites(data));
+        } else {
+          console.warn("Не удалось загрузить избранное");
+        }
+      } catch (err) {
+        console.error("Ошибка загрузки избранного:", err);
+      }
+    };
+  
+    fetchFavorites();
+  }, []);
+  
+  
+  
 
   const handleFilter = (category) => {
     setCurrentPage(1);
@@ -64,15 +93,39 @@ function DashboardPage() {
 
   const isFavorite = (id) => favorites.some((item) => item.id === id);
 
-  const handleToggleFavorite = (product) => {
-    dispatch(toggleFavorite(product));
-    const isNowFavorite = !isFavorite(product.id);
-    toast[isNowFavorite ? "success" : "error"](
-      isNowFavorite
-        ? "Добавлено в избранное"
-        : "Удалено из избранного"
-    );
+  const handleToggleFavorite = async (product) => {
+    const isFav = isFavorite(product.id);
+  
+    try {
+      const token = localStorage.getItem("token");
+  
+      if (isFav) {
+        await fetch(`http://127.0.0.1:8000/favorites/${product.id}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        toast.error("Удалено из избранного");
+      } else {
+        await fetch("http://127.0.0.1:8000/favorites/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ product_id: product.id }),
+        });
+        toast.success("Добавлено в избранное");
+      }
+  
+      dispatch(toggleFavorite(product));
+    } catch (error) {
+      toast.error("Ошибка при работе с избранным");
+      console.error("Favorites error:", error);
+    }
   };
+  
 
   return (
     <>

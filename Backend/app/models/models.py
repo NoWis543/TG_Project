@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, UniqueConstraint
+from sqlalchemy.orm import relationship
 from app.database import Base
 
 class Product(Base):
@@ -25,3 +26,17 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, nullable=False)
     password_hash = Column(String, nullable=False)
+
+    
+    favorites = relationship("Favorite", back_populates="user", cascade="all, delete-orphan")
+
+class Favorite(Base):
+    __tablename__ = "favorites"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    product_id = Column(Integer)
+
+    __table_args__ = (UniqueConstraint("user_id", "product_id", name="_user_product_uc"),)
+
+    user = relationship("User", back_populates="favorites")
