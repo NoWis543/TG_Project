@@ -58,7 +58,7 @@ const AppRouter = () => {
 
         {/* ✅ 🔐 Сохранённые сборки */}
         <Route
-          path="/saved"
+          path="/saved-builds"
           element={
             <PrivateRoute>
               <SavedBuilds />
