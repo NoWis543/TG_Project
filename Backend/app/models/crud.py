@@ -42,3 +42,14 @@ def create_build(db: Session, build: dict) -> Build:
 
 def get_builds(db: Session):
     return db.query(Build).all()
+
+def get_builds_by_user(db: Session, user_id: int):
+    return db.query(Build).filter(Build.user_id == user_id).all()
+
+def delete_build(db: Session, build_id: int, user_id: int) -> bool:
+    build = db.query(Build).filter(Build.id == build_id, Build.user_id == user_id).first()
+    if build:
+        db.delete(build)
+        db.commit()
+        return True
+    return False

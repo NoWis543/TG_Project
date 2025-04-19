@@ -5,6 +5,7 @@ import DashboardPage from "../pages/DashboardPage";
 import HomePage from "../pages/HomePage";
 import ProfilePage from "../pages/ProfilePage";
 import FavoritesPage from "../pages/FavoritesPage"; // ✅ добавили
+import SavedBuilds from "../pages/SavedBuilds"; // ✅ добавили
 import PrivateRoute from "../components/PrivateRoute";
 
 const AppRouter = () => {
@@ -54,6 +55,17 @@ const AppRouter = () => {
             </PrivateRoute>
           }
         />
+
+        {/* ✅ 🔐 Сохранённые сборки */}
+        <Route
+          path="/saved"
+          element={
+            <PrivateRoute>
+              <SavedBuilds />
+            </PrivateRoute>
+          }
+        />
+
 
         {/* 🔁 Фолбэк на главную */}
         <Route path="*" element={<Navigate to="/" replace />} />

@@ -19,30 +19,42 @@ function Navbar() {
       {/* Название проекта */}
       <Link
         to="/"
-        className="text-2xl font-bold text-blue-600 hover:opacity-80 transition"
+        className="text-2xl font-bold text-blue-600 hover:bg-blue-100 transition px-3 py-1 rounded-md"
       >
         HardBuilder
       </Link>
+
 
       {/* Правая часть: ссылки + аватар + меню */}
       <div className="flex items-center space-x-4 relative">
         {/* Ссылка на избранное */}
         <Link
           to="/favorites"
-          className="flex items-center gap-1 text-base font-medium text-gray-700 hover:text-yellow-500 transition"
+          className="flex items-center gap-1 px-3 py-2 rounded-md hover:bg-gray-100 hover:shadow transition"
         >
           <span className="text-lg">⭐</span>
           <span>Избранное</span>
         </Link>
 
+
         {/* Ссылка на каталог */}
         <Link
           to="/dashboard"
-          className="flex items-center gap-1 text-base font-medium text-gray-700 hover:text-blue-600 transition"
+          className="flex items-center gap-1 px-3 py-2 rounded-md hover:bg-gray-100 hover:shadow transition"
         >
           <span className="text-lg">🛒</span>
           <span>Каталог</span>
         </Link>
+
+
+        <Link
+          to="/saved-builds"
+          className="flex items-center gap-1 px-3 py-2 rounded-md hover:bg-gray-100 hover:shadow transition"
+        >
+          <span className="text-lg">🖥️</span>
+          <span>Мои сборки</span>
+        </Link>
+
 
         {/* Заглушка-аватар */}
         <div className="w-9 h-9 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">

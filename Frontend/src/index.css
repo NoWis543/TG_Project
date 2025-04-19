@@ -36,3 +36,12 @@
     animation: fade-in 0.4s ease-out forwards;
   }
 }
+
+
+/* Скрыть стрелочки в input[type=number] */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+

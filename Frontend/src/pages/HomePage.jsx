@@ -66,7 +66,7 @@ function HomePage() {
     <>
       <Navbar />
       <div className="flex flex-col items-center justify-center min-h-screen bg-blue-50 text-center px-4">
-        <h1 className="text-4xl sm:text-5xl font-bold text-blue-800 mb-4">
+        <h1 className="text-4xl sm:text-5xl font-bold text-blue-800 mt-5 mb-4">
           Добро пожаловать в <span className="text-indigo-600">HardBuilder!</span>
         </h1>
         <p className="text-lg text-gray-600 mb-6">
@@ -154,17 +154,18 @@ function HomePage() {
               ))}
             </div>
 
-            <div className="text-lg font-semibold mt-6 text-right pr-2 text-green-700">
-              Общая стоимость: {totalPrice.toLocaleString()} ₸
+            <div className="text-xl font-bold text-green-700 text-center mt-8 mb-4">
+              Общая стоимость: <span className="underline">{totalPrice.toLocaleString()} ₸</span>
             </div>
 
-            <div className="text-center mt-6">
+
+            <div className="text-center mt-6 mb-20">
               {token ? (
                 <button
                   onClick={handleSaveBuild}
                   className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition"
                 >
-                  Сохранить сборку 💾
+                  Сохранить сборку
                 </button>
               ) : (
                 <p className="text-gray-500">Войдите в аккаунт, чтобы сохранить сборку.</p>
@@ -180,8 +181,8 @@ function HomePage() {
         )}
 
         {unmatched.length > 0 && (
-          <div className="mt-10 bg-yellow-50 border border-yellow-300 text-yellow-800 p-4 rounded-lg max-w-2xl">
-            <h3 className="font-semibold text-lg mb-2">Не удалось найти в базе:</h3>
+          <div className="mt-10 mb-24 bg-yellow-50 border border-yellow-300 text-yellow-800 p-4 rounded-lg max-w-2xl">
+            <h3 className="font-semibold text-lg mb-">Не удалось найти в базе:</h3>
             <ul className="list-disc list-inside">
               {unmatched.map((item, index) => (
                 <li key={index}>{item}</li>
