@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 from app.models.models import Favorite, User, Product  # Модель избранного и пользователь
-from app.schemas.schemas import FavoriteCreate, FavoriteOut  # Схемы для валидации
+from app.schemas import FavoriteCreate, FavoriteOut # Схемы для валидации
 from app.schemas.products import ProductOut  # Схемы для валидации
 from app.database import get_db  # Функция получения сессии БД
 from app.utils.auth import get_current_user  # Получение текущего пользователя по токену

@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
 from app.models.models import Product, Favorite
 from app.schemas import FavoriteCreate
+from app.models.build import Build
+from app.schemas.build import BuildCreate
 
 def create_product(db: Session, name: str, price: float, category: str, link: str):
     product = Product(name=name, price=price, category=category, link=link)
@@ -29,3 +31,14 @@ def remove_favorite(db: Session, user_id: int, product_id: int):
         db.delete(favorite)
         db.commit()
     return favorite
+
+def create_build(db: Session, build: dict) -> Build:
+    db_build = Build(**build)  # ✅ без .dict()
+    db.add(db_build)
+    db.commit()
+    db.refresh(db_build)
+    return db_build
+
+
+def get_builds(db: Session):
+    return db.query(Build).all()

@@ -29,6 +29,7 @@ class User(Base):
 
     
     favorites = relationship("Favorite", back_populates="user", cascade="all, delete-orphan")
+    builds = relationship("Build", back_populates="user", cascade="all, delete-orphan")
 
 class Favorite(Base):
     __tablename__ = "favorites"
