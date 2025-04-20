@@ -4,25 +4,28 @@ function ProfilePage() {
   return (
     <>
       <Navbar />
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 px-4">
-        <div className="bg-white shadow-md rounded-lg p-8 max-w-md w-full">
-          <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Профиль пользователя</h2>
-
-          {/* Заглушка: аватар */}
-          <div className="w-24 h-24 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-2xl mx-auto mb-4">
-            HB
-          </div>
-
-          {/* Изменение аватарки */}
-          <div className="text-center mb-6">
-            <label className="cursor-pointer text-blue-600 hover:underline">
+      <div className="relative min-h-screen bg-hero text-white">
+        <div
+          className="absolute inset-0 backdrop-blur-sm"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
+        ></div>
+  
+        <div className="relative z-10 flex items-center justify-center min-h-screen px-4">
+          <div className="bg-white/10 backdrop-blur-lg p-8 rounded-xl shadow-xl w-full max-w-sm text-center text-white">
+            <h2 className="text-2xl font-bold mb-6">Профиль пользователя</h2>
+  
+            <div className="w-24 h-24 mx-auto rounded-full bg-blue-300 flex items-center justify-center text-xl font-bold text-blue-900 shadow-md">
+              НВ
+            </div>
+  
+            <p className="mt-4 text-blue-200 text-sm underline cursor-pointer hover:text-white transition">
               Загрузить новую аватарку
-              <input type="file" className="hidden" />
-            </label>
-          </div>
-
-          <div className="flex justify-center">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded transition">
+            </p>
+  
+            <button
+              disabled
+              className="mt-6 w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded transition"
+            >
               Сохранить изменения
             </button>
           </div>
@@ -30,6 +33,7 @@ function ProfilePage() {
       </div>
     </>
   );
+  
 }
 
 export default ProfilePage;

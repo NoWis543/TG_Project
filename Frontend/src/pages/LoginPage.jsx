@@ -51,24 +51,24 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-100 to-slate-200">
-      <div className="bg-white p-8 rounded-xl shadow-xl w-full max-w-sm">
+    <div className="flex items-center justify-center min-h-screen bg-auth">
+      <div className="bg-gradient-to-br from-[#e1c9f0] to-[#d4b1f5] backdrop-blur-md p-8 rounded-xl shadow-xl w-full max-w-sm">
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
           {isAuth ? "Вы авторизованы" : "Авторизация"}
         </h2>
-
+  
         {!isAuth ? (
           <>
             <input
-              className="w-full border border-gray-300 p-2 rounded mb-4"
+              className="w-full border border-gray-300 p-2 rounded mb-4 bg-white/70 placeholder-gray-600"
               placeholder="Логин"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
-
+  
             <div className="relative mb-4">
               <input
-                className="w-full border p-2 rounded pr-10"
+                className="w-full border border-gray-300 p-2 rounded pr-10 bg-white/70 placeholder-gray-600"
                 type={showPassword ? "text" : "password"}
                 placeholder="Пароль"
                 value={password}
@@ -81,19 +81,19 @@ function LoginPage() {
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
             </div>
-
+  
             <button
-              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 rounded transition"
               onClick={handleLogin}
               disabled={loading}
             >
               {loading ? "..." : "Войти"}
             </button>
-
-            <p className="text-sm text-center mt-4 text-gray-600">
+  
+            <p className="text-sm text-center mt-4 text-black/80">
               Нет аккаунта?{" "}
               <span
-                className="text-blue-600 cursor-pointer hover:underline"
+                className="text-[#a21caf] hover:text-white font-semibold underline cursor-pointer transition"
                 onClick={() => navigate("/register")}
               >
                 Зарегистрируйтесь
@@ -111,7 +111,7 @@ function LoginPage() {
             </button>
           </>
         )}
-
+  
         {message && (
           <p className={`mt-4 text-center text-sm ${isAuth ? "text-green-600" : "text-red-600"}`}>
             {message}
@@ -120,6 +120,7 @@ function LoginPage() {
       </div>
     </div>
   );
+  
 }
 
 export default LoginPage;

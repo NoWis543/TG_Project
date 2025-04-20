@@ -44,15 +44,15 @@ function RegisterPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
+    <div className="flex items-center justify-center min-h-screen bg-[url('/images/bg-gradient.jpg')] bg-cover bg-center">
+      <div className="bg-white/70 backdrop-blur-md p-8 rounded-xl shadow-xl w-full max-w-sm">
         <h2 className="text-2xl font-bold mb-2 text-center text-gray-800">
           Добро пожаловать!
         </h2>
-        <p className="text-sm text-center text-gray-600 mb-6">
+        <p className="text-sm text-center text-gray-700 mb-6">
           Пожалуйста зарегистрируйтесь, а если имеется аккаунт —{" "}
           <span
-            className="text-blue-600 cursor-pointer hover:underline"
+            className="text-[#a21caf] hover:text-white underline underline-offset-2 cursor-pointer transition"
             onClick={() => navigate("/login")}
           >
             нажмите войти
@@ -60,7 +60,7 @@ function RegisterPage() {
         </p>
 
         <input
-          className="w-full border p-2 rounded mb-4"
+          className="w-full border border-gray-300 p-2 rounded mb-4 bg-white/70 placeholder-gray-600 text-gray-800"
           placeholder="Имя пользователя"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -68,7 +68,7 @@ function RegisterPage() {
 
         <div className="relative mb-4">
           <input
-            className="w-full border p-2 rounded pr-10"
+            className="w-full border border-gray-300 p-2 rounded pr-10 bg-white/70 placeholder-gray-600 text-gray-800"
             type={showPassword ? "text" : "password"}
             placeholder="Пароль"
             value={password}
@@ -84,7 +84,7 @@ function RegisterPage() {
 
         <div className="relative mb-4">
           <input
-            className="w-full border p-2 rounded pr-10"
+            className="w-full border border-gray-300 p-2 rounded pr-10 bg-white/70 placeholder-gray-600 text-gray-800"
             type={showConfirm ? "text" : "password"}
             placeholder="Подтвердите пароль"
             value={confirm}
@@ -99,16 +99,16 @@ function RegisterPage() {
         </div>
 
         <button
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          className="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded font-semibold transition"
           onClick={handleRegister}
         >
           Зарегистрироваться
         </button>
 
-        <p className="mt-4 text-center text-sm text-gray-600">
+        <p className="mt-4 text-center text-sm text-gray-900">
           Уже есть аккаунт?{" "}
           <span
-            className="text-blue-600 cursor-pointer hover:underline"
+            className="text-[#a21caf] hover:text-white underline underline-offset-2 cursor-pointer transition"
             onClick={() => navigate("/login")}
           >
             Войти

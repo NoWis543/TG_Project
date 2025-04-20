@@ -15,69 +15,61 @@ function Navbar() {
   };
 
   return (
-    <header className="w-full bg-white shadow-sm px-6 py-3 flex items-center justify-between relative">
-      {/* Название проекта */}
+    <header className="w-full px-6 py-3 flex items-center justify-between relative z-50 bg-gradient-to-r from-purple-700 via-purple-800 to-purple-900 text-white shadow-md">
+      {/* Название проекта с градиентом */}
       <Link
         to="/"
-        className="text-2xl font-bold text-blue-600 hover:bg-blue-100 transition px-3 py-1 rounded-md"
+        className="text-2xl font-bold bg-gradient-to-r from-purple-200 via-fuchsia-300 to-purple-300 bg-clip-text text-transparent"
       >
         HardBuilder
       </Link>
 
-
-      {/* Правая часть: ссылки + аватар + меню */}
-      <div className="flex items-center space-x-4 relative">
-        {/* Ссылка на избранное */}
+      {/* Ссылки */}
+      <div className="flex items-center space-x-5 relative">
         <Link
           to="/favorites"
-          className="flex items-center gap-1 px-3 py-2 rounded-md hover:bg-gray-100 hover:shadow transition"
+          className="flex items-center gap-1 px-3 py-2 rounded-md hover:bg-white/10 text-white font-medium transition"
         >
-          <span className="text-lg">⭐</span>
+          <span>❤️</span>
           <span>Избранное</span>
         </Link>
 
-
-        {/* Ссылка на каталог */}
         <Link
           to="/dashboard"
-          className="flex items-center gap-1 px-3 py-2 rounded-md hover:bg-gray-100 hover:shadow transition"
+          className="flex items-center gap-1 px-3 py-2 rounded-md hover:bg-white/10 text-white font-medium transition"
         >
-          <span className="text-lg">🛒</span>
+          <span>🛒</span>
           <span>Каталог</span>
         </Link>
 
-
         <Link
           to="/saved-builds"
-          className="flex items-center gap-1 text-base font-medium text-gray-700 hover:bg-gray-100 px-3 py-1 rounded transition"
+          className="flex items-center gap-1 px-3 py-2 rounded-md hover:bg-white/10 text-white font-medium transition"
         >
-          <span className="text-lg">🖥️</span>
+          <span>🖥️</span>
           <span>Мои сборки</span>
         </Link>
 
-
-
-        {/* Заглушка-аватар */}
-        <div className="w-9 h-9 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">
+        {/* Аватар */}
+        <div className="w-9 h-9 rounded-full bg-blue-200 text-blue-800 flex items-center justify-center font-bold text-sm">
           HB
         </div>
 
-        {/* Иконка меню */}
+        {/* Меню пользователя */}
         <div className="relative">
           <FaBars
-            className="text-xl text-gray-600 hover:text-blue-600 cursor-pointer"
+            className="text-xl text-white hover:text-purple-300 cursor-pointer"
             onClick={() => setMenuOpen(!menuOpen)}
             title="Меню пользователя"
           />
-
           {menuOpen && (
-            <div className="absolute right-0 mt-2 w-44 bg-white border rounded shadow-lg z-50">
+            <div className="absolute right-0 mt-2 w-44 bg-gradient-to-br from-purple-800 via-purple-900 to-black text-white border border-white/20 rounded shadow-lg z-50">
               <button
                 onClick={() => {
                   setMenuOpen(false);
                   navigate("/profile");
                 }}
-                className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                className="block w-full text-left px-4 py-2 text-sm hover:bg-purple-700/50"
               >
                 Профиль
               </button>
@@ -86,7 +78,7 @@ function Navbar() {
                   setMenuOpen(false);
                   handleLogout();
                 }}
-                className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                className="block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-red-900/40"
               >
                 Выйти из аккаунта
               </button>

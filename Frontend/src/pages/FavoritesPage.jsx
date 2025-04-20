@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
 import { setFavorites, toggleFavorite } from "../store/slices/favoritesSlice";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
 import toast from "react-hot-toast";
 
 function FavoritesPage() {
@@ -35,84 +35,90 @@ function FavoritesPage() {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       if (!res.ok) {
         throw new Error("Ошибка при удалении с сервера");
       }
-  
-      dispatch(toggleFavorite(product)); // Удаляем локально после успешного ответа
+
+      dispatch(toggleFavorite(product));
     } catch (err) {
       console.error("❌ Не удалось удалить из избранного:", err);
     }
   };
-  
 
   return (
     <>
       <Navbar />
-      <div className="p-6">
-        <h2 className="text-2xl font-bold text-center mb-6">Избранное ❤️</h2>
+      <div className="relative min-h-screen bg-[url('/images/bg-stars2.jpg')] bg-cover bg-center text-white">
+      <div
+        className="absolute inset-0 backdrop-blur-sm"
+        style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+      ></div>
+        <div className="relative z-10 px-6 py-16">
+          <h2 className="text-4xl font-bold text-center text-purple-400 mb-10">
+            Избранное <span className="animate-pulse">❤️</span>
+          </h2>
 
-        {favorites.length === 0 ? (
-          <p className="text-center text-gray-500">Пока ничего нет в избранном.</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {favorites.map((product) => (
-              <div
-                key={product.id}
-                className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-lg transition-transform hover:-translate-y-1 relative"
-              >
+          {favorites.length === 0 ? (
+            <p className="text-center text-white/80">Пока ничего нет в избранном.</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {favorites.map((product) => (
                 <div
-                  onClick={async () => {
-                    const token = localStorage.getItem("token");
-                    try {
-                      const res = await fetch(`http://127.0.0.1:8000/favorites/${product.id}`, {
-                        method: "DELETE",
-                        headers: { Authorization: `Bearer ${token}` },
-                      });
-                      if (res.ok) {
-                        toast.error("Удалено из избранного");
-                        // 🔄 Удаляем из Redux
-                        dispatch(toggleFavorite(product));
-                      } else {
-                        toast.error("Ошибка при удалении");
-                      }
-                    } catch (err) {
-                      toast.error("Сервер не отвечает");
-                    }
-                  }}
-                  title="Убрать из избранного"
-                  className="absolute top-3 right-3 text-xl cursor-pointer transition-transform transform hover:scale-125 active:scale-95"
+                  key={product.id}
+                  className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-5 shadow-md hover:shadow-xl transition-transform hover:-translate-y-1 relative"
                 >
-                  <FaHeart className="text-red-500 animate-pulse" />
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <h3 className="font-bold text-lg text-gray-800">{product.name}</h3>
-                  <p className="text-sm text-gray-500">
-                    Категория: <span className="italic">{product.category}</span>
-                  </p>
-                </div>
-
-                <div className="flex justify-between items-center mt-4">
-                  <span className="text-xl font-bold text-blue-600">
-                    {typeof product.price === "number"
-                      ? product.price.toLocaleString() + " ₸"
-                      : "Цена не указана"}
-                  </span>
-                  <a
-                    href={product.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600 transition"
+                  <div
+                    onClick={async () => {
+                      const token = localStorage.getItem("token");
+                      try {
+                        const res = await fetch(`http://127.0.0.1:8000/favorites/${product.id}`, {
+                          method: "DELETE",
+                          headers: { Authorization: `Bearer ${token}` },
+                        });
+                        if (res.ok) {
+                          toast.error("Удалено из избранного");
+                          dispatch(toggleFavorite(product));
+                        } else {
+                          toast.error("Ошибка при удалении");
+                        }
+                      } catch (err) {
+                        toast.error("Сервер не отвечает");
+                      }
+                    }}
+                    title="Убрать из избранного"
+                    className="absolute top-3 right-3 text-xl cursor-pointer hover:scale-125 active:scale-95 transition"
                   >
-                    Перейти к товару
-                  </a>
+                    <FaHeart className="text-red-500 animate-pulse" />
+                  </div>
+
+                  <div className="flex flex-col gap-2 mb-4">
+                    <h3 className="font-semibold text-lg">{product.name}</h3>
+                    <p className="text-sm text-gray-300">
+                      Категория: <span className="italic">{product.category}</span>
+                    </p>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-purple-300 font-bold text-lg">
+                      {typeof product.price === "number"
+                        ? product.price.toLocaleString() + " ₸"
+                        : "Цена не указана"}
+                    </span>
+                    <a
+                      href={product.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-sm transition"
+                    >
+                      Перейти к товару
+                    </a>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </>
   );

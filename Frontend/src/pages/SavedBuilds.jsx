@@ -19,9 +19,7 @@ function SavedBuilds() {
         },
       });
 
-      if (!res.ok) {
-        throw new Error("Ошибка при загрузке сборок.");
-      }
+      if (!res.ok) throw new Error("Ошибка при загрузке сборок.");
 
       const data = await res.json();
       setBuilds(data);
@@ -62,69 +60,81 @@ function SavedBuilds() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-blue-50 p-6 text-center">
-        <h1 className="text-3xl font-bold text-blue-800 mb-6">Мои сборки</h1>
+      <div className="relative min-h-screen bg-hero text-white">
+        <div
+          className="absolute inset-0 backdrop-blur-sm"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
+        ></div>
 
-        {error && <p className="text-red-600">{error}</p>}
+        <div className="relative z-10 p-6">
+          <h1 className="text-3xl font-extrabold text-center text-purple-300 mb-8 drop-shadow">
+            Мои сборки
+          </h1>
 
-        {builds.length === 0 && !error ? (
-          <p className="text-gray-600">Вы ещё не сохранили ни одной сборки.</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {builds.map((build) => (
-              <div
-                key={build.id}
-                onClick={() => openModal(build)}
-                className="bg-white border border-gray-200 p-4 rounded-lg shadow hover:shadow-xl transition-all cursor-pointer relative hover:scale-[1.02]"
-              >
-                <h2 className="text-lg font-semibold text-blue-700 mb-1">{build.name}</h2>
-                <p className="text-green-700 font-medium text-sm mb-3">
-                  Общая стоимость: {build.total_price.toLocaleString()} ₸
-                </p>
-                <ul className="text-left list-disc list-inside text-sm text-gray-700 space-y-1">
-                  {build.components.slice(0, 3).map((item, idx) => (
-                    <li key={idx}>
-                      {item.name} <span className="text-gray-400">({item.category})</span>
-                    </li>
-                  ))}
-                  {build.components.length > 3 && (
-                    <li className="text-gray-400 italic">
-                      ...ещё {build.components.length - 3}
-                    </li>
-                  )}
-                </ul>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteBuild(build.id);
-                }}
-                  className="absolute top-2 right-3 bg-gray-90 hover:bg-red-100 text-red-600 hover:text-red-800 rounded-full p-1 shadow transition duration-150"
-                  title="Удалить сборку"
-                  aria-label="Удалить сборку"
+          {error && <p className="text-red-400 text-center">{error}</p>}
+
+          {builds.length === 0 && !error ? (
+            <p className="text-white/80 text-center">Вы ещё не сохранили ни одной сборки.</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {builds.map((build) => (
+                <div
+                  key={build.id}
+                  onClick={() => openModal(build)}
+                  className="bg-white/10 border border-white/20 backdrop-blur-md p-5 rounded-xl shadow-md hover:shadow-lg transition cursor-pointer relative hover:-translate-y-1"
                 >
-                  <XMarkIcon className="w-5 h-5" />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+                  <h2 className="text-lg font-semibold text-purple-300 mb-2">
+                    {build.name}
+                  </h2>
+                  <p className="text-pink-400 font-bold text-sm mb-3">
+                    Общая стоимость: {build.total_price.toLocaleString()} ₸
+                  </p>
+                  <ul className="text-left list-disc list-inside text-sm text-white/90 space-y-1">
+                    {build.components.slice(0, 3).map((item, idx) => (
+                      <li key={idx}>
+                        {item.name}{" "}
+                        <span className="text-gray-300">({item.category})</span>
+                      </li>
+                    ))}
+                    {build.components.length > 3 && (
+                      <li className="text-gray-400 italic">
+                        ...ещё {build.components.length - 3}
+                      </li>
+                    )}
+                  </ul>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteBuild(build.id);
+                    }}
+                    className="absolute top-2 right-3 bg-white/10 hover:bg-red-500/10 text-red-400 hover:text-red-500 rounded-full p-1 transition"
+                    title="Удалить сборку"
+                    aria-label="Удалить сборку"
+                  >
+                    <XMarkIcon className="w-5 h-5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {selectedBuild && (
         <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center px-4">
-          <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-xl relative">
-            <h3 className="text-xl font-bold text-blue-800 mb-4">
+          <div className="bg-white/10 backdrop-blur-lg border border-white/20 text-white w-full max-w-md p-6 rounded-xl shadow-xl relative">
+            <h3 className="text-xl font-bold text-purple-300 mb-4">
               {selectedBuild.name}
             </h3>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2 text-sm max-h-96 overflow-y-auto pr-2">
               {selectedBuild.components.map((item, idx) => (
                 <li key={idx} className="flex items-start gap-2">
-                  <span className="text-gray-500 mt-0.5">🛒</span>
+                  <span className="mt-0.5">🛒</span>
                   <a
                     href={item.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-700 hover:underline"
+                    className="text-blue-300 hover:underline"
                   >
                     {item.name}
                   </a>
@@ -132,12 +142,12 @@ function SavedBuilds() {
               ))}
             </ul>
             <button
-                onClick={closeModal}
-                className="absolute top-3 right-3 text-gray-500 hover:text-red-500 transition transform hover:scale-110"
-                title="Закрыть окно"
-                aria-label="Закрыть окно"
+              onClick={closeModal}
+              className="absolute top-3 right-3 text-gray-300 hover:text-red-500 transition transform hover:scale-110"
+              title="Закрыть окно"
+              aria-label="Закрыть окно"
             >
-            <XMarkIcon className="w-6 h-6" />
+              <XMarkIcon className="w-6 h-6" />
             </button>
           </div>
         </div>

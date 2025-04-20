@@ -1,24 +1,11 @@
 @import "tailwindcss";
 
-/* @keyframes gradientShift {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-  
-  .bg-animated {
-    background: linear-gradient(-45deg, #6366f1, #a855f7, #ec4899);
-    background-size: 200% 200%;
-    animation: gradientShift 8s ease infinite;
-  } */
-
-  /* <div className="flex items-center justify-center min-h-screen bg-animated"> для RegisterPage и LoginPage */
+:root {
+  --color-dark: #2b2d42;     /* тёмный верхний */
+  --color-purple: #4b306a;   /* насыщенный фиолетовый */
+  --color-mid: #8164ab;      /* средний */
+  --color-light: #b4a3d3;    /* светлый */
+}
 
 @layer utilities {
   @keyframes fade-in {
@@ -38,10 +25,79 @@
 }
 
 
-/* Скрыть стрелочки в input[type=number] */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
+
+
+.bg-violet-gradient {
+  background: linear-gradient(to bottom, #2b2d42, #443266, #6b4faa, #a18cd1);
+  min-height: 100vh;
+}
+
+/* Темные карточки с фиолетовым стилем */
+.card-purple {
+  background-color: #3a345e;
+  color: #e0d9f3;
+  border-color: #6b4faa;
+}
+
+.card-purple h3 {
+  color: #ffffff;
+}
+
+.card-purple a {
+  background-color: #6b4faa;
+  color: white;
+}
+
+.card-purple a:hover {
+  background-color: #5c3cb0;
+}
+
+
+
+
+/* Фон для формы входа и регистрации */
+.bg-auth {
+  background-image: url('/images/bg-gradient.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Фон для всех остальных страниц */
+.bg-main {
+  background-image: url('/images/bg-stars.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: rgba(0, 0, 0, 0.3); /* затемнение сверху */
+  background-blend-mode: multiply;
+}
+
+
+.bg-home {
+  background-image: url('/images/bg-stars2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.bg-hero {
+  background-image: url('/images/bg-stars2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+
+.bg-favorites {
+  background-image: url('/images/bg-stars2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
