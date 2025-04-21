@@ -4,7 +4,7 @@ from app.database import get_db
 from app.schemas.build import BuildCreate, BuildOut
 from app.models.crud import create_build, get_builds, get_builds_by_user, delete_build
 from app.utils.auth import get_current_user
-from app.models.models import User  # модель пользователя
+from app.models.models import User  
 from fastapi import HTTPException
 
 router = APIRouter()

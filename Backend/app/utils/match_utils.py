@@ -15,7 +15,7 @@ SYNONYMS = {
 
 def normalize(text: str) -> str:
     text = text.lower()
-    text = re.sub(r"\s+", " ", text)  # убрать лишние пробелы
+    text = re.sub(r"\s+", " ", text)  
     for src, target in SYNONYMS.items():
         text = text.replace(src, target)
     return text.strip()
@@ -41,7 +41,7 @@ def fuzzy_match(
             if similarity >= threshold:
                 matched.append(product)
                 found = True
-                break  # Один матч на строку
+                break  
 
         if not found and return_unmatched:
             unmatched.append(gpt_line)

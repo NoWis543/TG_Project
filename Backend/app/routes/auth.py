@@ -4,7 +4,7 @@ from app.database import SessionLocal
 from app.models import User
 from app.schemas.schemas import UserCreate, UserLogin
 from app.security import hash_password, authenticate_user, create_jwt_token
-from app.utils.auth import get_current_user  # Функция для проверки токена
+from app.utils.auth import get_current_user  
 from fastapi.security import OAuth2PasswordRequestForm
 
 router = APIRouter()

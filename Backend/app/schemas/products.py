@@ -8,5 +8,5 @@ class ProductOut(BaseModel):
     link: str
 
     class Config:
-        from_attributes = True  # если у тебя Pydantic v2
-        # orm_mode = True        # если Pydantic v1
+        from_attributes = True  # для Pydantic v2
+        # orm_mode = True        # для Pydantic v1

@@ -33,7 +33,7 @@ def remove_favorite(db: Session, user_id: int, product_id: int):
     return favorite
 
 def create_build(db: Session, build: dict) -> Build:
-    db_build = Build(**build)  # ✅ без .dict()
+    db_build = Build(**build) 
     db.add(db_build)
     db.commit()
     db.refresh(db_build)

@@ -61,7 +61,7 @@ input[type="number"]::-webkit-inner-spin-button {
 
 
 
-/* Фон для формы входа и регистрации */
+
 .bg-auth {
   background-image: url('/images/bg-gradient.jpg');
   background-size: cover;
@@ -69,13 +69,13 @@ input[type="number"]::-webkit-inner-spin-button {
   background-repeat: no-repeat;
 }
 
-/* Фон для всех остальных страниц */
+
 .bg-main {
   background-image: url('/images/bg-stars.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: rgba(0, 0, 0, 0.3); /* затемнение сверху */
+  background-color: rgba(0, 0, 0, 0.3); 
   background-blend-mode: multiply;
 }
 

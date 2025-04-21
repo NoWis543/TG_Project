@@ -10,18 +10,18 @@ from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models import Product
 
-# Пути к драйверу и Firefox
+
 gecko_path = r"D:\geckodriver\geckodriver.exe"
 firefox_binary_path = r"C:\\Users\\amogu\\AppData\\Local\\Mozilla Firefox\\firefox.exe"
 
-# Настройки Selenium
+
 options = Options()
 options.binary_location = firefox_binary_path
 service = Service(gecko_path)
 driver = webdriver.Firefox(service=service, options=options)
 wait = WebDriverWait(driver, 10)
 
-# Категории товаров
+
 categories = {
     "Процессоры": "https://shop.kz/karaganda/offers/protsessory/",
     "Материнские платы": "https://shop.kz/karaganda/offers/materinskie-platy/",
@@ -31,10 +31,10 @@ categories = {
     "SSD диски": "https://shop.kz/karaganda/offers/ssd-diski/"
 }
 
-# Файл CSV
+
 csv_filename = "D:\\TG Project\\Backend\\app\\storage\\products_white_wind.csv"
 
-# Создаем или очищаем CSV
+
 with open(csv_filename, "w", newline="", encoding="utf-8") as file:
     writer = csv.writer(file)
     writer.writerow(["Название", "Цена", "Категория", "Ссылка"])
@@ -103,11 +103,11 @@ def parse_category(category_name, url):
             except Exception as e:
                 print(f"Ошибка парсинга товара {index}: {e}")
 
-        # Переход на следующую страницу
+        
         current_url = driver.current_url
         next_buttons = [
-            "//div[4]/div/ul/li[7]/a/span",  # Верхняя кнопка
-            "//div[6]/div/ul/li[7]/a/span"   # Нижняя кнопка
+            "//div[4]/div/ul/li[7]/a/span",  # Верхняя 
+            "//div[6]/div/ul/li[7]/a/span"   # Нижняя 
         ]
         
         next_clicked = False
@@ -129,7 +129,7 @@ def parse_category(category_name, url):
         
         page += 1
 
-# Запуск парсинга по всем категориям
+
 for category, link in categories.items():
     parse_category(category, link)
     time.sleep(2)

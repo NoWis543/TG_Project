@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSelector } from "react-redux"; // ✅ Добавлено
+import { useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
 
 function HomePage() {
@@ -10,9 +10,9 @@ function HomePage() {
   const [matchedProducts, setMatchedProducts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [unmatched, setUnmatched] = useState([]);
-  const [saveStatus, setSaveStatus] = useState(null); // ✅ Добавлено
+  const [saveStatus, setSaveStatus] = useState(null); 
 
-  const auth = useSelector((state) => state.auth); // ✅ Из Redux
+  const auth = useSelector((state) => state.auth); 
   const token = auth.token;
 
   const handleSubmit = async (e) => {
@@ -28,7 +28,7 @@ function HomePage() {
       setMatchedProducts(data.products || []);
       setTotalPrice(data.total_price || 0);
       setUnmatched(data.unmatched || []);
-      setSaveStatus(null); // сброс при новом поиске
+      setSaveStatus(null); 
     } catch (error) {
       console.error("Ошибка:", error);
     }
@@ -45,7 +45,7 @@ function HomePage() {
         body: JSON.stringify({
           name: `Сборка для цели: ${goal}`,
           total_price: totalPrice,
-          components: matchedProducts, // 💡 массив товаров
+          components: matchedProducts, 
         }),
       });
   

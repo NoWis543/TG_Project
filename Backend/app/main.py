@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.openapi.utils import get_openapi
-from fastapi.middleware.cors import CORSMiddleware  # Импорт CORS
+from fastapi.middleware.cors import CORSMiddleware
 from app.routes import auth
 from app.routes import products
 from app.routes import favorites
@@ -10,16 +10,16 @@ from app.routes import builds
 
 app = FastAPI(title="My API", description="API with JWT Authentication", version="1.0")
 
-# Добавляем CORS Middleware
+#CORS Middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Разрешаем фронтенд Vite
+    allow_origins=["http://localhost:5173"], 
     allow_credentials=True,
-    allow_methods=["*"],  # Разрешаем все методы (GET, POST, PUT и т.д.)
-    allow_headers=["*"],  # Разрешаем все заголовки
+    allow_methods=["*"],  
+    allow_headers=["*"],  
 )
 
-# Определяем OAuth2PasswordBearer (токен передается в Authorization Header)
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login/")
 
 @app.get("/")
@@ -32,7 +32,7 @@ app.include_router(favorites.router, prefix="/favorites", tags=["Favorites"])
 app.include_router(chat.router)
 app.include_router(builds.router)
 
-# ОПРЕДЕЛЯЕМ ПРАВИЛЬНУЮ OpenAPI-схему
+# OpenAPI-схема
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
@@ -44,15 +44,15 @@ def custom_openapi():
         routes=app.routes,
     )
 
-    # Настраиваем OAuth2PasswordBearer правильно (как на картинке друга)
+    
     openapi_schema["components"]["securitySchemes"] = {
         "OAuth2PasswordBearer": {
             "type": "http",
-            "scheme": "bearer"  # Правильная схема
+            "scheme": "bearer"  
         }
     }
 
-    # Добавляем требование авторизации для всех эндпоинтов
+    # требование авторизации для всех эндпоинтов
     openapi_schema["security"] = [{"OAuth2PasswordBearer": []}]
 
     app.openapi_schema = openapi_schema

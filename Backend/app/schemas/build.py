@@ -4,7 +4,7 @@ from typing import List, Dict, Any
 class BuildBase(BaseModel):
     name: str
     total_price: float
-    components: List[Dict[str, Any]]  # список компонентов без user_id
+    components: List[Dict[str, Any]] 
 
 class BuildCreate(BuildBase):
     pass

@@ -15,7 +15,7 @@ def ask_gpt(prompt: str) -> list[str]:
     )
     text = response.choices[0].message.content.strip()
 
-    # 🧠 Извлекаем строки вида "1. Название", "2. Название", ...
+    # Извлека строки вида "1. Название", "2. Название", ...
     components = re.findall(r"\d+\.\s*(.+)", text)
 
     return components if components else [text]

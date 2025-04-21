@@ -11,14 +11,14 @@ from app.database import SessionLocal
 from app.models import Product
 import time
 
-# Настройка логирования
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-# Пути
+
 CHROMEDRIVER_PATH = "D:\\ChromeDriver\\chromedriver-win64\\chromedriver.exe"
 CSV_PATH = "D:\\TG Project\\Backend\\app\\storage\\products_mechta.csv"
 
-# Настройки Selenium
+
 service = Service(CHROMEDRIVER_PATH)
 options = Options()
 options.binary_location = r"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
@@ -36,7 +36,7 @@ def parse_mechta():
             driver.get(url)
             logging.info(f"Открыта страница {page_number}...")
 
-            # Закрытие всплывающего окна
+            
             try:
                 wait_popup = WebDriverWait(driver, 5)
                 close_button = wait_popup.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="popmechanic-form-106218"]/button')))
@@ -87,7 +87,7 @@ def parse_mechta():
 
 def save_to_csv(products):
     """Сохранение данных в CSV-файл"""
-    os.makedirs(os.path.dirname(CSV_PATH), exist_ok=True)  # Создаем папку, если её нет
+    os.makedirs(os.path.dirname(CSV_PATH), exist_ok=True)  
     with open(CSV_PATH, "w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file, delimiter=";")
         writer.writerow(["Название", "Цена"])
@@ -103,7 +103,7 @@ def save_to_db(products):
             existing = session.query(Product).filter_by(name=product["name"], category="Mechta").first()
             if existing:
                 existing.price = product["price"]
-                existing.link = product["link"]  # обновим ссылку
+                existing.link = product["link"]  
             else:
                 new_product = Product(
                     name=product["name"],

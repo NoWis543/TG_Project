@@ -4,8 +4,8 @@ import RegisterPage from "../pages/RegisterPage";
 import DashboardPage from "../pages/DashboardPage";
 import HomePage from "../pages/HomePage";
 import ProfilePage from "../pages/ProfilePage";
-import FavoritesPage from "../pages/FavoritesPage"; // ✅ добавили
-import SavedBuilds from "../pages/SavedBuilds"; // ✅ добавили
+import FavoritesPage from "../pages/FavoritesPage"; 
+import SavedBuilds from "../pages/SavedBuilds"; 
 import PrivateRoute from "../components/PrivateRoute";
 
 const AppRouter = () => {

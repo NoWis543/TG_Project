@@ -32,7 +32,7 @@ function LoginPage() {
       const data = await response.json();
       if (response.ok) {
         dispatch(login({ token: data.access_token }));
-        navigate("/"); // ⬅️ теперь редирект на домашнюю страницу
+        navigate("/"); 
         setMessage("Вход успешен!");
       } else {
         setMessage(data.detail || "Ошибка входа");

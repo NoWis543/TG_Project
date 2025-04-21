@@ -8,10 +8,8 @@ celery_app = Celery(
     include=["app.tasks.tasks"],
 )
 
-# Используем динамическое in-memory расписание (без json-файла)
-celery_app.conf.beat_scheduler = "celery.beat:Scheduler"  # 💡 Это стандартный in-memory scheduler
+celery_app.conf.beat_scheduler = "celery.beat:Scheduler" 
 
-# Указываем маршруты задач
 celery_app.conf.task_routes = {
     "app.tasks.tasks.*": {"queue": "default"},
 }
@@ -25,5 +23,4 @@ celery_app.conf.beat_schedule = {
 
 celery_app.conf.timezone = "Asia/Yekaterinburg"
 
-# Явный импорт задач
 import app.tasks.tasks

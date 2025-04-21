@@ -9,12 +9,12 @@ from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models import Product
 
-# Настройка WebDriver
+
 service = Service("D:\\ChromeDriver\\chromedriver-win64\\chromedriver.exe")
 options = Options()
 driver = webdriver.Chrome(service=service, options=options)
 
-# Категории товаров
+
 categories = {
     "Видеокарты": "https://www.sulpak.kz/f/videokartiy",
     "Жесткие диски и SSD": "https://www.sulpak.kz/f/zhestkie_diski_hdd_i_ssd",
@@ -48,7 +48,7 @@ try:
     driver.get("https://www.sulpak.kz/")
     wait = WebDriverWait(driver, 10)
     
-    # Закрываем всплывающее окно
+    
     confirm_button = wait.until(EC.element_to_be_clickable((By.XPATH, '//*[@id="popup_city_default"]/div[1]/div/div/div/div[3]/a[2]')))
     confirm_button.click()
 

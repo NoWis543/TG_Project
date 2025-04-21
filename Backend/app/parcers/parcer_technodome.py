@@ -10,14 +10,14 @@ import os
 from app.database import SessionLocal
 from app.models import Product
 
-# Настройка логирования
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-# Пути
+
 CHROMEDRIVER_PATH = "D:\\ChromeDriver\\chromedriver-win64\\chromedriver.exe"
 CSV_PATH = "D:\\TG Project\\Backend\\app\\storage\\products_technodome.csv"
 
-# Настройки Selenium
+
 service = Service(CHROMEDRIVER_PATH)
 options = Options()
 options.binary_location = r"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
@@ -58,7 +58,7 @@ def parse_technodom():
                 except Exception:
                     break  # Если товаров больше нет, переходим к следующей странице
 
-            # Ищем кнопку следующей страницы
+            
             try:
                 if page_number == 1:
                     next_button = driver.find_element(By.XPATH, '//*[@id="__next"]/section/main/section/div/div[2]/article/div/div/a')
@@ -67,7 +67,7 @@ def parse_technodom():
                 
                 next_button.click()
                 page_number += 1
-                wait.until(EC.staleness_of(next_button))  # Ожидаем загрузки новой страницы
+                wait.until(EC.staleness_of(next_button)) 
             except Exception:
                 logging.info("Парсинг завершен, последняя страница.")
                 break
@@ -75,14 +75,14 @@ def parse_technodom():
     finally:
         driver.quit()
 
-    # Сохраняем данные в CSV и БД
+    
     save_to_csv(products)
     save_to_db(products)
     logging.info("Данные успешно сохранены в CSV и БД!")
 
 def save_to_csv(products):
     """Сохранение данных в CSV-файл"""
-    os.makedirs(os.path.dirname(CSV_PATH), exist_ok=True)  # Создаем папку, если её нет
+    os.makedirs(os.path.dirname(CSV_PATH), exist_ok=True)  
     with open(CSV_PATH, "w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file, delimiter=";")
         writer.writerow(["Название", "Цена"])
@@ -97,7 +97,7 @@ def save_to_db(products):
         for product in products:
             existing_product = session.query(Product).filter_by(name=product["name"]).first()
             if existing_product:
-                # Обновление данных
+                
                 existing_product.price = product["price"]
             else:
                 new_product = Product(
